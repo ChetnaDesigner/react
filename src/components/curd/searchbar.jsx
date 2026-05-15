@@ -1,12 +1,19 @@
 function SearchBar({ search, setSearch }) {
   return (
-    <input
-      className="search-input form-control"
-      type="text"
-      placeholder="Search by name"
-      value={search}
-      onChange={(e) => setSearch(e.target.value)}
-    />
+    <div className="contact-search">
+      <label htmlFor="contact-search" className="contact-search__label">
+        Search contacts
+      </label>
+      <input
+        id="contact-search"
+        className="contact-search__input"
+        type="search"
+        placeholder="Search by name…"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        autoComplete="off"
+      />
+    </div>
   );
 }
 

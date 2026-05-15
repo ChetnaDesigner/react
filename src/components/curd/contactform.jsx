@@ -35,34 +35,67 @@ function ContactForm({ onAdd }) {
 
   return (
     <form className="contact-form" onSubmit={handleSubmit}>
-      <input
-        type="text"
-        name="name"
-        className="form-control"
-        placeholder="Enter name"
-        value={formData.name}
-        onChange={handleChange}
-      />
+      <header className="contact-form__header">
+        <span className="contact-form__badge">New entry</span>
+        <h2 className="contact-form__title">Add a contact</h2>
+        <p className="contact-form__hint">
+          Fill in the details below. All fields are required.
+        </p>
+      </header>
 
-      <input
-        type="text"
-        name="phone"
-         className="form-control"
-        placeholder="Enter phone"
-        value={formData.phone}
-        onChange={handleChange}
-      />
+      <div className="contact-form__fields">
+        <div className="contact-form__field">
+          <label htmlFor="contact-name" className="contact-form__label">
+            Full name
+          </label>
+          <input
+            id="contact-name"
+            type="text"
+            name="name"
+            className="contact-form__input"
+            placeholder="e.g. Priya Mehta"
+            value={formData.name}
+            onChange={handleChange}
+            autoComplete="name"
+          />
+        </div>
 
-      <input
-        type="email"
-        name="email"
-        className="form-control"
-        placeholder="Enter email"
-        value={formData.email}
-        onChange={handleChange}
-      />
+        <div className="contact-form__field">
+          <label htmlFor="contact-phone" className="contact-form__label">
+            Phone
+          </label>
+          <input
+            id="contact-phone"
+            type="tel"
+            name="phone"
+            className="contact-form__input"
+            placeholder="e.g. +919876543210"
+            value={formData.phone}
+            onChange={handleChange}
+            autoComplete="tel"
+          />
+        </div>
 
-      <button type="submit" className="btn btn-primary">Add Contact</button>
+        <div className="contact-form__field">
+          <label htmlFor="contact-email" className="contact-form__label">
+            Email
+          </label>
+          <input
+            id="contact-email"
+            type="email"
+            name="email"
+            className="contact-form__input"
+            placeholder="e.g. name@example.com"
+            value={formData.email}
+            onChange={handleChange}
+            autoComplete="email"
+          />
+        </div>
+      </div>
+
+      <button type="submit" className="contact-form__submit">
+        Add contact
+      </button>
     </form>
   );
 }

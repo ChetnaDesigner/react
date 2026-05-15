@@ -26,12 +26,17 @@ function App() {
   );
 
   return (
-    <div className="app">
-      <h1>Contact Manager</h1>
+    <div className="app contact-manager">
+      <header className="contact-manager__header">
+        <h1 className="contact-manager__title">Contact Manager</h1>
+        <p className="contact-manager__subtitle">
+          Save contacts and find them quickly by name.
+        </p>
+      </header>
 
       <ContactForm onAdd={addContact} />
       <SearchBar search={search} setSearch={setSearch} />
-      <div className="mt-3">
+      <div className="contact-manager__list">
         <ContactList contacts={filteredContacts} onDelete={deleteContact} />
       </div>
     </div>
