@@ -1,45 +1,32 @@
-import { useState } from "react";
-import ContactForm from "./components/curd/contactform";
-import ContactList from "./components/curd/contactlist";
-import SearchBar from "./components/curd/searchbar";
+import { Navigate, Route, Routes } from "react-router";
+import ToastAlert from "./components/curd/ToastAlert";
+import Navbar from "./components/navbar";
+import { ContactProvider, useContacts } from "./context/ContactContext";
+import AddContactPage from "./pages/add-contact";
+import ContactListPage from "./pages/contact-list";
 import "./App.css";
 
-function App() {
-  const [contacts, setContacts] = useState([]);
-  const [search, setSearch] = useState("");
-
-  function addContact(newContact) {
-    const contactWithId = {
-      ...newContact,
-      id: Date.now(),
-    };
-    setContacts((prev) => [...prev, contactWithId]);
-  }
-
-  function deleteContact(id) {
-    setContacts((prev) => prev.filter((contact) => contact.id !== id));
-  }
-
-  const q = search.trim().toLowerCase();
-  const filteredContacts = contacts.filter((contact) =>
-    (contact.name ?? "").toLowerCase().includes(q)
-  );
+function AppRoutes() {
+  const { toast, hideToast } = useContacts();
 
   return (
-    <div className="app contact-manager">
-      <header className="contact-manager__header">
-        <h1 className="contact-manager__title">Contact Manager</h1>
-        <p className="contact-manager__subtitle">
-          Save contacts and find them quickly by name.
-        </p>
-      </header>
+    <>
+      <Navbar />
+      <ToastAlert toast={toast} onDismiss={hideToast} />
+      <Routes>
+        <Route path="/" element={<Navigate to="/contacts/add" replace />} />
+        <Route path="/contacts/add" element={<AddContactPage />} />
+        <Route path="/contacts/list" element={<ContactListPage />} />
+      </Routes>
+    </>
+  );
+}
 
-      <ContactForm onAdd={addContact} />
-      <SearchBar search={search} setSearch={setSearch} />
-      <div className="contact-manager__list">
-        <ContactList contacts={filteredContacts} onDelete={deleteContact} />
-      </div>
-    </div>
+function App() {
+  return (
+    <ContactProvider>
+      <AppRoutes />
+    </ContactProvider>
   );
 }
 
