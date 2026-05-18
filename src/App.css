@@ -183,20 +183,20 @@
   }
 }
 /* Navbar */
-.theme-navabar {
+.theme-navbar {
   background-color: #000;
   color: #fff;
 }
-.theme-navabar .nav-link {
+.theme-navbar .nav-link {
   color: #fff;
 }
-.theme-navabar .nav-link:hover {
+.theme-navbar .nav-link:hover {
   color: #fff;
 }
-.theme-navabar .nav-link:active {
+.theme-navbar .nav-link:active {
   color: #fff;
 }
-.theme-navabar .nav-link:focus {
+.theme-navbar .nav-link:focus {
   color: #fff;
 }
 /* CURD */

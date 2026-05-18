@@ -2,8 +2,8 @@ import { NavLink } from "react-router";
 
 function Navbar() {
   return (
-    <nav className="navbar navbar-expand-lg theme-navabar">
-      <div className="container-fluid gap-2">
+    <nav className="navbar navbar-expand-lg theme-navbar">
+      <div className="container-fluid gap-2 justify-content-start">
         <NavLink className="nav-link" to="/contacts/add">
           Add Contact
         </NavLink>
