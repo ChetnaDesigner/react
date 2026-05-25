@@ -4,6 +4,7 @@ import Navbar from "./components/navbar";
 import { ContactProvider, useContacts } from "./context/ContactContext";
 import AddContactPage from "./pages/add-contact";
 import ContactListPage from "./pages/contact-list";
+import ApiDemo from "./pages/api-demo";
 import "./App.css";
 
 function AppRoutes() {
@@ -17,6 +18,7 @@ function AppRoutes() {
         <Route path="/" element={<Navigate to="/contacts/add" replace />} />
         <Route path="/contacts/add" element={<AddContactPage />} />
         <Route path="/contacts/list" element={<ContactListPage />} />
+        <Route path="/apidemo" element={<ApiDemo />} />
       </Routes>
     </>
   );

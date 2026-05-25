@@ -11,6 +11,10 @@ function Navbar() {
         <NavLink className="nav-link" to="/contacts/list">
           Contact List
         </NavLink>
+        <span className="text-white-50">|</span>
+        <NavLink className="nav-link" to="/apidemo">
+          API Demo
+        </NavLink>
       </div>
     </nav>
   );

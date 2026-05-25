@@ -753,3 +753,114 @@
   border: 1px solid rgba(15, 23, 42, 0.06);
   box-shadow: 0 4px 24px -8px rgba(15, 23, 42, 0.1);
 }
+/* Shared card panel — same look as contact form */
+.contact-panel {
+  position: relative;
+  margin-bottom: 1.75rem;
+  padding: 1.75rem 1.5rem 1.5rem;
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  box-shadow:
+    0 4px 6px -1px rgba(55, 88, 249, 0.06),
+    0 10px 40px -10px rgba(15, 23, 42, 0.12);
+  overflow: hidden;
+}
+
+.contact-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #3758f9, #5e84fc, #91aeff);
+}
+
+.contact-form__input--file {
+  padding: 0.6rem 0.75rem;
+  cursor: pointer;
+}
+
+.contact-form__input--file::file-selector-button {
+  margin-right: 0.75rem;
+  padding: 0.45rem 0.85rem;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #2237ee;
+  background: #eff3ff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.api-upload-status {
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #3758f9;
+}
+
+.api-upload-success {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 12px;
+}
+
+.api-upload-success__text {
+  margin: 0 0 0.5rem;
+  font-size: 0.875rem;
+  color: #166534;
+}
+
+.api-upload-success__link {
+  display: block;
+  margin-bottom: 1rem;
+  font-size: 0.8125rem;
+  color: #2237ee;
+  word-break: break-all;
+}
+
+.api-image-preview {
+  margin-top: 0.5rem;
+}
+
+.api-image-preview img {
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 2px solid #e2e8f0;
+  box-shadow: 0 4px 16px -4px rgba(15, 23, 42, 0.15);
+}
+
+.api-users-count {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.api-user-list {
+  margin-top: 0.5rem;
+}
+
+.contact-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.contact-card__meta svg {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
