@@ -5,6 +5,7 @@ import { ContactProvider, useContacts } from "./context/ContactContext";
 import AddContactPage from "./pages/add-contact";
 import ContactListPage from "./pages/contact-list";
 import ApiDemo from "./pages/api-demo";
+import WeatherDemo from "./pages/weather-demo";
 import "./App.css";
 
 function AppRoutes() {
@@ -19,6 +20,7 @@ function AppRoutes() {
         <Route path="/contacts/add" element={<AddContactPage />} />
         <Route path="/contacts/list" element={<ContactListPage />} />
         <Route path="/apidemo" element={<ApiDemo />} />
+        <Route path="/weather" element={<WeatherDemo />} />
       </Routes>
     </>
   );

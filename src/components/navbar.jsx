@@ -15,6 +15,10 @@ function Navbar() {
         <NavLink className="nav-link" to="/apidemo">
           API Demo
         </NavLink>
+        <span className="text-white-50">|</span>
+        <NavLink className="nav-link" to="/weather">
+          Weather
+        </NavLink>
       </div>
     </nav>
   );
