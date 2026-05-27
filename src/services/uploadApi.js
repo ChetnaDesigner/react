@@ -1,13 +1,11 @@
+import { validateImageFile } from "../utils/validateImageFile";
+
 const UPLOAD_URL = "/api/upload";
-const MAX_SIZE_MB = 5;
 
 export async function uploadImageToApi(file) {
-  if (!file?.type?.startsWith("image/")) {
-    throw new Error("Please select an image file (JPG, PNG, GIF, etc.).");
-  }
-
-  if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-    throw new Error(`Image must be smaller than ${MAX_SIZE_MB}MB.`);
+  const validationMessage = validateImageFile(file);
+  if (validationMessage) {
+    throw new Error(validationMessage);
   }
 
   const formData = new FormData();
