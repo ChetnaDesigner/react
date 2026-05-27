@@ -7,7 +7,7 @@ import ContactListPage from "./pages/contact-list";
 import ApiDemo from "./pages/api-demo";
 import WeatherDemo from "./pages/weather-demo";
 import "./App.css";
-
+import ApiDemoPage from "./pages/api-demo";
 function AppRoutes() {
   const { toast, hideToast } = useContacts();
 
@@ -16,6 +16,7 @@ function AppRoutes() {
       <Navbar />
       <ToastAlert toast={toast} onDismiss={hideToast} />
       <Routes>
+        <Route path="/api-demo" element={<ApiDemoPage />} />
         <Route path="/" element={<Navigate to="/contacts/add" replace />} />
         <Route path="/contacts/add" element={<AddContactPage />} />
         <Route path="/contacts/list" element={<ContactListPage />} />
