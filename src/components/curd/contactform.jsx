@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import ImagePreviewModal from "../ImagePreviewModal";
 import { validateImageFile } from "../../utils/validateImageFile";
 
 const emptyForm = { name: "", phone: "", email: "", address: "" };
@@ -33,6 +34,7 @@ function ContactForm({ onAdd }) {
   const [formError, setFormError] = useState("");
   const [photoPreviewUrl, setPhotoPreviewUrl] = useState("");
   const [photoFileName, setPhotoFileName] = useState("");
+  const [isPhotoPreviewOpen, setIsPhotoPreviewOpen] = useState(false);
   const photoPreviewRef = useRef("");
 
   useEffect(() => {
@@ -122,6 +124,7 @@ function ContactForm({ onAdd }) {
     photoPreviewRef.current = "";
     setPhotoPreviewUrl("");
     setPhotoFileName("");
+    setIsPhotoPreviewOpen(false);
     setFormData(emptyForm);
     setErrors({});
     setFormError("");
@@ -256,7 +259,15 @@ function ContactForm({ onAdd }) {
           )}
           {photoPreviewUrl && (
             <div className="contact-form__photo-preview">
-              <img src={photoPreviewUrl} alt={photoFileName || "Contact photo preview"} />
+              <button
+                type="button"
+                className="contact-form__photo-preview-btn"
+                onClick={() => setIsPhotoPreviewOpen(true)}
+                aria-label="Open photo preview in modal"
+              >
+                <img src={photoPreviewUrl} alt={photoFileName || "Contact photo preview"} />
+              </button>
+              <p className="contact-form__hint">Click photo to preview full size</p>
             </div>
           )}
         </div>
@@ -266,11 +277,18 @@ function ContactForm({ onAdd }) {
         <div className="contact-entry-preview">
           <p className="api-image-preview__label">Photo with contact details</p>
           <div className="api-user-detail-preview__card">
-            <img
-              className="api-user-detail-preview__photo"
-              src={photoPreviewUrl}
-              alt={formData.name || photoFileName || "Contact photo"}
-            />
+            <button
+              type="button"
+              className="api-user-detail-preview__photo-btn"
+              onClick={() => setIsPhotoPreviewOpen(true)}
+              aria-label="Open photo preview in modal"
+            >
+              <img
+                className="api-user-detail-preview__photo"
+                src={photoPreviewUrl}
+                alt={formData.name || photoFileName || "Contact photo"}
+              />
+            </button>
             <div className="api-user-detail-preview__info">
               <h3 className="api-user-detail-preview__name">
                 {formData.name.trim() || "Name (required)"}
@@ -292,6 +310,13 @@ function ContactForm({ onAdd }) {
       <button type="submit" className="contact-form__submit">
         Add contact
       </button>
+
+      <ImagePreviewModal
+        open={isPhotoPreviewOpen}
+        imageUrl={photoPreviewUrl}
+        title={formData.name.trim() || photoFileName || "Contact photo"}
+        onClose={() => setIsPhotoPreviewOpen(false)}
+      />
     </form>
   );
 }

@@ -1,3 +1,6 @@
+import { useState } from "react";
+import ImagePreviewModal from "../ImagePreviewModal";
+
 function initialsFromTitle(title) {
   const parts = title?.trim().split(/\s+/).filter(Boolean) ?? [];
   if (parts.length === 0) return "?";
@@ -6,6 +9,8 @@ function initialsFromTitle(title) {
 }
 
 function Card({ id, name, phone, email, address, photoUrl, onDeleteClick }) {
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+
   return (
     <article
       className={`contact-card contact-card--profile${photoUrl ? " contact-card--has-photo" : ""}`}
@@ -27,11 +32,18 @@ function Card({ id, name, phone, email, address, photoUrl, onDeleteClick }) {
       <div className="contact-card__profile">
         <div className="contact-card__media">
           {photoUrl ? (
-            <img
-              className="contact-card__photo"
-              src={photoUrl}
-              alt={name}
-            />
+            <button
+              type="button"
+              className="contact-card__photo-btn"
+              onClick={() => setIsPreviewOpen(true)}
+              aria-label={`View photo of ${name}`}
+            >
+              <img
+                className="contact-card__photo"
+                src={photoUrl}
+                alt={name}
+              />
+            </button>
           ) : (
             <div className="contact-card__photo contact-card__photo--initials">
               {initialsFromTitle(name)}
@@ -96,6 +108,13 @@ function Card({ id, name, phone, email, address, photoUrl, onDeleteClick }) {
           </dl>
         </div>
       </div>
+
+      <ImagePreviewModal
+        open={isPreviewOpen}
+        imageUrl={photoUrl}
+        title={name}
+        onClose={() => setIsPreviewOpen(false)}
+      />
     </article>
   );
 }

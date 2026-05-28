@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import ImagePreviewModal from "../components/ImagePreviewModal";
 import { uploadImageToApi } from "../services/uploadApi";
 import { validateImageFile } from "../utils/validateImageFile";
 
@@ -41,20 +42,6 @@ function ApiDemoPage() {
       }
     };
   }, []);
-
-  useEffect(() => {
-    function handleEsc(e) {
-      if (e.key === "Escape") {
-        setIsPreviewModalOpen(false);
-      }
-    }
-
-    if (isPreviewModalOpen) {
-      document.addEventListener("keydown", handleEsc);
-    }
-
-    return () => document.removeEventListener("keydown", handleEsc);
-  }, [isPreviewModalOpen]);
 
   async function fetchUsers() {
     try {
@@ -354,28 +341,23 @@ function ApiDemoPage() {
                   key={user.id}
                 >
                   <header className="contact-card__header">
-                    {userPhoto ? (
-                      <div className="contact-card__avatar contact-card__avatar--photo">
-                        <img src={userPhoto} alt={user.name} />
-                      </div>
-                    ) : (
-                      <div className="contact-card__avatar">
-                        {initialsFromName(user.name)}
-                      </div>
-                    )}
+                   
                   </header>
                   <div className="contact-card__body">
-                    <h3 className="contact-card__name">{user.name}</h3>
                     {userPhoto && (
-                      <div className="api-user-photo-row">
+                      <div className="api-user-card-photo">
                         <img
-                          className="api-user-photo-row__thumb"
+                          className="api-user-card-photo__img"
                           src={userPhoto}
-                          alt={`Photo for ${user.name}`}
+                          alt={user.name}
                         />
-                        <span className="api-user-photo-badge">Uploaded photo</span>
+                     
                       </div>
                     )}
+                     <div className="contact-card__avatar">
+                      {initialsFromName(user.name)}
+                    </div>
+                    <h3 className="contact-card__name">{user.name}</h3>
                     <p className="contact-card__meta">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <path
@@ -427,41 +409,12 @@ function ApiDemoPage() {
         )}
       </section>
 
-      {uploadedPhoto && displayImageUrl && isPreviewModalOpen && (
-        <dialog
-          className="image-preview-modal"
-          open
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              setIsPreviewModalOpen(false);
-            }
-          }}
-          onCancel={(e) => {
-            e.preventDefault();
-            setIsPreviewModalOpen(false);
-          }}
-        >
-          <div className="image-preview-modal__content">
-            <div className="image-preview-modal__toolbar">
-              <p className="image-preview-modal__title">{uploadedPhoto.fileName}</p>
-              <button
-                type="button"
-                className="image-preview-modal__close"
-                onClick={() => setIsPreviewModalOpen(false)}
-                aria-label="Close preview modal"
-              >
-                ×
-              </button>
-            </div>
-            <div className="image-preview-modal__image-wrap">
-              <img
-                src={displayImageUrl}
-                alt={`Large preview of ${uploadedPhoto.fileName}`}
-              />
-            </div>
-          </div>
-        </dialog>
-      )}
+      <ImagePreviewModal
+        open={isPreviewModalOpen}
+        imageUrl={displayImageUrl}
+        title={uploadedPhoto?.fileName || "Photo preview"}
+        onClose={() => setIsPreviewModalOpen(false)}
+      />
     </div>
   );
 }
