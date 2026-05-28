@@ -15,6 +15,12 @@ export function ContactProvider({ children }) {
     setToast(null);
   }
 
+  function revokeContactPhoto(contact) {
+    if (contact?.photoUrl?.startsWith("blob:")) {
+      URL.revokeObjectURL(contact.photoUrl);
+    }
+  }
+
   function addContact(newContact) {
     const contactWithId = {
       ...newContact,
@@ -27,9 +33,13 @@ export function ContactProvider({ children }) {
   }
 
   function deleteContact(id) {
-    setContacts((prev) =>
-      prev.filter((contact) => String(contact.id) !== String(id))
-    );
+    setContacts((prev) => {
+      const removed = prev.find(
+        (contact) => String(contact.id) === String(id)
+      );
+      revokeContactPhoto(removed);
+      return prev.filter((contact) => String(contact.id) !== String(id));
+    });
     showToast("Contact deleted successfully", "success");
   }
 

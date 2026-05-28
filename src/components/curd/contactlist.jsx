@@ -34,6 +34,8 @@ function ContactList({ contacts, onDelete }) {
             name={contact.name}
             phone={contact.phone}
             email={contact.email}
+            address={contact.address}
+            photoUrl={contact.photoUrl}
             onDeleteClick={setContactToDelete}
           />
         ))}

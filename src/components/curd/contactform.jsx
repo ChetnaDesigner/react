@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { validateImageFile } from "../../utils/validateImageFile";
 
-const emptyForm = { name: "", phone: "", email: "" };
+const emptyForm = { name: "", phone: "", email: "", address: "" };
 
 function validateForm(data) {
   const errors = {};
@@ -19,6 +20,10 @@ function validateForm(data) {
     errors.email = "Enter a valid email address";
   }
 
+  if (!data.address.trim()) {
+    errors.address = "Address is required";
+  }
+
   return errors;
 }
 
@@ -26,6 +31,61 @@ function ContactForm({ onAdd }) {
   const [formData, setFormData] = useState(emptyForm);
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState("");
+  const [photoPreviewUrl, setPhotoPreviewUrl] = useState("");
+  const [photoFileName, setPhotoFileName] = useState("");
+  const photoPreviewRef = useRef("");
+
+  useEffect(() => {
+    return () => {
+      if (photoPreviewRef.current.startsWith("blob:")) {
+        URL.revokeObjectURL(photoPreviewRef.current);
+      }
+    };
+  }, []);
+
+  function clearPhoto() {
+    if (photoPreviewRef.current.startsWith("blob:")) {
+      URL.revokeObjectURL(photoPreviewRef.current);
+    }
+    photoPreviewRef.current = "";
+    setPhotoPreviewUrl("");
+    setPhotoFileName("");
+    if (errors.photo) {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next.photo;
+        return next;
+      });
+    }
+  }
+
+  function handlePhotoChange(e) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+
+    if (!file) return;
+
+    const validationMessage = validateImageFile(file);
+    if (validationMessage) {
+      clearPhoto();
+      setErrors((prev) => ({ ...prev, photo: validationMessage }));
+      return;
+    }
+
+    if (photoPreviewRef.current.startsWith("blob:")) {
+      URL.revokeObjectURL(photoPreviewRef.current);
+    }
+
+    const previewUrl = URL.createObjectURL(file);
+    photoPreviewRef.current = previewUrl;
+    setPhotoPreviewUrl(previewUrl);
+    setPhotoFileName(file.name);
+    setErrors((prev) => {
+      const next = { ...prev };
+      delete next.photo;
+      return next;
+    });
+  }
   function handleChange(e) {
     const { name, value } = e.target;
 
@@ -53,7 +113,15 @@ function ContactForm({ onAdd }) {
       return;
     }
 
-    onAdd(formData);
+    onAdd({
+      ...formData,
+      photoUrl: photoPreviewUrl || "",
+      photoFileName: photoFileName || "",
+    });
+
+    photoPreviewRef.current = "";
+    setPhotoPreviewUrl("");
+    setPhotoFileName("");
     setFormData(emptyForm);
     setErrors({});
     setFormError("");
@@ -65,7 +133,7 @@ function ContactForm({ onAdd }) {
         <span className="contact-form__badge">New entry</span>
         <h2 className="contact-form__title">Add a contact</h2>
         <p className="contact-form__hint">
-          Fill in the details below. All fields are required.
+          Fill in the details below. Photo is optional (images only, max 5MB).
         </p>
       </header>
 
@@ -123,6 +191,29 @@ function ContactForm({ onAdd }) {
         </div>
 
         <div className="contact-form__field">
+          <label htmlFor="contact-address" className="contact-form__label">
+            Address
+          </label>
+          <input
+            id="contact-address"
+            type="text"
+            name="address"
+            className={`contact-form__input${errors.address ? " contact-form__input--error" : ""}`}
+            placeholder="e.g. 12 MG Road, Mumbai"
+            value={formData.address}
+            onChange={handleChange}
+            autoComplete="street-address"
+            aria-invalid={Boolean(errors.address)}
+            aria-describedby={errors.address ? "contact-address-error" : undefined}
+          />
+          {errors.address && (
+            <p id="contact-address-error" className="contact-form__error">
+              {errors.address}
+            </p>
+          )}
+        </div>
+
+        <div className="contact-form__field">
           <label htmlFor="contact-email" className="contact-form__label">
             Email
           </label>
@@ -144,7 +235,59 @@ function ContactForm({ onAdd }) {
             </p>
           )}
         </div>
+
+        <div className="contact-form__field">
+          <label htmlFor="contact-photo" className="contact-form__label">
+            Photo (optional)
+          </label>
+          <input
+            id="contact-photo"
+            type="file"
+            accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml"
+            className={`contact-form__input contact-form__input--file${errors.photo ? " contact-form__input--error" : ""}`}
+            onChange={handlePhotoChange}
+            aria-invalid={Boolean(errors.photo)}
+            aria-describedby={errors.photo ? "contact-photo-error" : undefined}
+          />
+          {errors.photo && (
+            <p id="contact-photo-error" className="contact-form__error" role="alert">
+              {errors.photo}
+            </p>
+          )}
+          {photoPreviewUrl && (
+            <div className="contact-form__photo-preview">
+              <img src={photoPreviewUrl} alt={photoFileName || "Contact photo preview"} />
+            </div>
+          )}
+        </div>
       </div>
+
+      {photoPreviewUrl && (
+        <div className="contact-entry-preview">
+          <p className="api-image-preview__label">Photo with contact details</p>
+          <div className="api-user-detail-preview__card">
+            <img
+              className="api-user-detail-preview__photo"
+              src={photoPreviewUrl}
+              alt={formData.name || photoFileName || "Contact photo"}
+            />
+            <div className="api-user-detail-preview__info">
+              <h3 className="api-user-detail-preview__name">
+                {formData.name.trim() || "Name (required)"}
+              </h3>
+              <p className="api-user-detail-preview__meta">
+                {formData.email.trim() || "Email (required)"}
+              </p>
+              <p className="api-user-detail-preview__meta">
+                {formData.phone.trim() || "Phone (required)"}
+              </p>
+              <p className="api-user-detail-preview__meta">
+                {formData.address.trim() || "Address (required)"}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <button type="submit" className="contact-form__submit">
         Add contact

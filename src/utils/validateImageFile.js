@@ -9,12 +9,22 @@ const ALLOWED_TYPES = [
 
 const MAX_SIZE_MB = 5;
 
+const ALLOWED_EXTENSIONS = /\.(jpe?g|png|gif|webp|svg)$/i;
+
 export function validateImageFile(file) {
   if (!file) {
     return "Please select an image file.";
   }
 
-  if (!file.type.startsWith("image/") || !ALLOWED_TYPES.includes(file.type)) {
+  const hasAllowedMime =
+    file.type.startsWith("image/") && ALLOWED_TYPES.includes(file.type);
+  const hasAllowedExtension = ALLOWED_EXTENSIONS.test(file.name);
+
+  if (!hasAllowedMime && !hasAllowedExtension) {
+    return "Only image files are allowed (JPG, PNG, GIF, WebP, SVG).";
+  }
+
+  if (file.type && !file.type.startsWith("image/")) {
     return "Only image files are allowed (JPG, PNG, GIF, WebP, SVG).";
   }
 

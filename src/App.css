@@ -535,8 +535,8 @@
 
 .contact-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.25rem;
 }
 
 .contact-card {
@@ -631,6 +631,119 @@
 .contact-card__link svg {
   flex-shrink: 0;
   opacity: 0.7;
+}
+
+.contact-card--profile {
+  position: relative;
+  padding: 1rem;
+}
+
+.contact-card__delete--corner {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 2;
+}
+
+.contact-card__profile {
+  display: flex;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.contact-card__media {
+  flex-shrink: 0;
+}
+
+.contact-card__photo {
+  display: block;
+  width: 108px;
+  height: 132px;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 2px solid #e8eef9;
+  box-shadow: 0 4px 14px -6px rgba(55, 88, 249, 0.25);
+}
+
+.contact-card__photo--initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2237ee;
+  background: linear-gradient(160deg, #eff3ff 0%, #dae2ff 100%);
+}
+
+.contact-card__details {
+  flex: 1;
+  min-width: 0;
+  padding-right: 2rem;
+}
+
+.contact-card__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin: 0;
+}
+
+.contact-card__field {
+  margin: 0;
+}
+
+.contact-card__label {
+  margin: 0 0 0.2rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.contact-card__value {
+  margin: 0;
+}
+
+.contact-card__link span,
+.contact-card__text span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contact-card__text {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: #475569;
+}
+
+.contact-card__text span {
+  white-space: normal;
+  word-break: break-word;
+}
+
+.contact-card__text svg {
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+  opacity: 0.7;
+  color: #64748b;
+}
+
+.contact-card--profile .contact-card__name {
+  margin: 0 0 0.75rem;
+  padding-right: 1.5rem;
+  font-size: 1.125rem;
+  line-height: 1.25;
+}
+
+.contact-card--has-photo {
+  border-color: rgba(55, 88, 249, 0.18);
+  background: linear-gradient(180deg, #fff 0%, #fafbff 100%);
 }
 
 .contact-confirm-overlay {
@@ -828,6 +941,75 @@
   margin-top: 0.5rem;
 }
 
+.api-image-preview__label {
+  margin: 0 0 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.api-image-preview__hint {
+  margin: 0.5rem 0 0 !important;
+}
+
+.api-user-detail-preview {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.contact-entry-preview {
+  margin: 1.25rem 0 0;
+  padding-top: 1.25rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.api-user-detail-preview__card {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.api-user-detail-preview__photo {
+  width: 96px;
+  height: 96px;
+  flex-shrink: 0;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 2px solid #e2e8f0;
+}
+
+.api-user-detail-preview__name {
+  margin: 0 0 0.35rem;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.api-user-detail-preview__meta {
+  margin: 0 0 0.2rem;
+  font-size: 0.875rem;
+  color: #475569;
+}
+
+.api-user-detail-preview__meta:last-child {
+  margin-bottom: 0;
+}
+
+.api-image-preview__button {
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 12px;
+  cursor: zoom-in;
+}
+
 .api-upload-success__header {
   display: flex;
   flex-wrap: wrap;
@@ -876,6 +1058,84 @@
   box-shadow: 0 4px 16px -4px rgba(15, 23, 42, 0.15);
 }
 
+.image-preview-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border: none;
+  padding: 1rem;
+  background: transparent;
+  overflow: hidden;
+}
+
+.image-preview-modal::backdrop {
+  background: rgba(2, 6, 23, 0.78);
+}
+
+.image-preview-modal__content {
+  position: relative;
+  width: min(92vw, 880px);
+  margin: 0 auto;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 14px;
+  background: #0f172a;
+  box-shadow: 0 28px 60px rgba(2, 6, 23, 0.5);
+  overflow: hidden;
+}
+
+.image-preview-modal__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+}
+
+.image-preview-modal__title {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.image-preview-modal__image-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-height: calc(86vh - 48px);
+  padding: 0.5rem;
+  background: #020617;
+}
+
+.image-preview-modal__image-wrap img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  max-height: calc(86vh - 58px);
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.image-preview-modal__close {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 999px;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: #334155;
+  background: #f8fafc;
+  cursor: pointer;
+}
+
 .contact-card__avatar--photo {
   padding: 0;
   overflow: hidden;
@@ -893,13 +1153,40 @@
   border-color: rgba(55, 88, 249, 0.2);
 }
 
+.api-user-photo-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 0.5rem;
+}
+
+.api-user-photo-row__thumb {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
 .api-user-photo-badge {
-  margin: 0 0 0.35rem;
+  margin: 0;
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: #2237ee;
+}
+
+.contact-form__photo-preview {
+  margin-top: 0.5rem;
+}
+
+.contact-form__photo-preview img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 2px solid #e2e8f0;
 }
 
 .api-users-count {

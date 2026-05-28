@@ -13,7 +13,7 @@ function ContactListPage() {
         <p className="contact-manager__subtitle">
           {contacts.length === 0
             ? "No contacts yet. Add your first contact from the Add Contact page."
-            : `You have ${contacts.length} saved contact${contacts.length === 1 ? "" : "s"}.`}
+            : `You have ${contacts.length} saved contact${contacts.length === 1 ? "" : "s"} with photo, email, phone, and address.`}
         </p>
       </header>
 

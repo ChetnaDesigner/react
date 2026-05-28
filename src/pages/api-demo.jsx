@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { uploadImageToApi } from "../services/uploadApi";
 import { validateImageFile } from "../utils/validateImageFile";
 
@@ -18,18 +18,43 @@ function ApiDemoPage() {
   const [uploadApiError, setUploadApiError] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
+  const latestPreviewUrlRef = useRef("");
 
   useEffect(() => {
     fetchUsers();
   }, []);
 
   useEffect(() => {
+    if (users.length === 0) return;
+
+    setUploadedPhoto((prev) => {
+      if (!prev || prev.assignedUserId != null) return prev;
+      return { ...prev, assignedUserId: users[0].id };
+    });
+  }, [users]);
+
+  useEffect(() => {
     return () => {
-      if (uploadedPhoto?.previewUrl?.startsWith("blob:")) {
-        URL.revokeObjectURL(uploadedPhoto.previewUrl);
+      if (latestPreviewUrlRef.current.startsWith("blob:")) {
+        URL.revokeObjectURL(latestPreviewUrlRef.current);
       }
     };
-  }, [uploadedPhoto]);
+  }, []);
+
+  useEffect(() => {
+    function handleEsc(e) {
+      if (e.key === "Escape") {
+        setIsPreviewModalOpen(false);
+      }
+    }
+
+    if (isPreviewModalOpen) {
+      document.addEventListener("keydown", handleEsc);
+    }
+
+    return () => document.removeEventListener("keydown", handleEsc);
+  }, [isPreviewModalOpen]);
 
   async function fetchUsers() {
     try {
@@ -53,10 +78,12 @@ function ApiDemoPage() {
       if (prev?.previewUrl?.startsWith("blob:")) {
         URL.revokeObjectURL(prev.previewUrl);
       }
+      latestPreviewUrlRef.current = "";
       return null;
     });
     setUploadValidationError("");
     setUploadApiError("");
+    setIsPreviewModalOpen(false);
   }
 
   async function handleImageUpload(event) {
@@ -76,18 +103,20 @@ function ApiDemoPage() {
     setUploadApiError("");
 
     const previewUrl = URL.createObjectURL(file);
+    const defaultUserId = users[0]?.id ?? null;
 
     setUploadedPhoto((prev) => {
       if (prev?.previewUrl?.startsWith("blob:")) {
         URL.revokeObjectURL(prev.previewUrl);
       }
+      latestPreviewUrlRef.current = previewUrl;
       return {
         fileName: file.name,
         fileType: file.type,
         fileSize: file.size,
         previewUrl,
         apiUrl: "",
-        assignedUserId: prev?.assignedUserId ?? null,
+        assignedUserId: prev?.assignedUserId ?? defaultUserId,
       };
     });
 
@@ -113,11 +142,14 @@ function ApiDemoPage() {
     );
   }
 
-  function getPhotoForUser(userId) {
-    if (!uploadedPhoto || uploadedPhoto.assignedUserId !== userId) {
+  function getPhotoUrlForUser(userId) {
+    if (
+      !uploadedPhoto ||
+      Number(uploadedPhoto.assignedUserId) !== Number(userId)
+    ) {
       return null;
     }
-    return uploadedPhoto.apiUrl || uploadedPhoto.previewUrl;
+    return uploadedPhoto.previewUrl || uploadedPhoto.apiUrl || null;
   }
 
   const filteredUsers = users.filter((user) =>
@@ -125,15 +157,19 @@ function ApiDemoPage() {
   );
 
   const displayImageUrl =
-    uploadedPhoto?.apiUrl || uploadedPhoto?.previewUrl || "";
+    uploadedPhoto?.previewUrl || uploadedPhoto?.apiUrl || "";
+
+  const assignedUser = users.find(
+    (user) => Number(user.id) === Number(uploadedPhoto?.assignedUserId)
+  );
 
   return (
     <div className="app contact-manager">
       <header className="contact-manager__header">
         <h1 className="contact-manager__title">API Demo</h1>
         <p className="contact-manager__subtitle">
-          Fetch users from a public API, upload a photo with preview, and attach
-          it to a user card.
+          Upload an image (validated), store it in React state, and attach it to a
+          user card below.
         </p>
       </header>
 
@@ -197,7 +233,21 @@ function ApiDemoPage() {
             </div>
 
             <div className="api-image-preview">
-              <img src={displayImageUrl} alt={`Preview of ${uploadedPhoto.fileName}`} />
+              <p className="api-image-preview__label">Preview</p>
+              <button
+                type="button"
+                className="api-image-preview__button"
+                onClick={() => setIsPreviewModalOpen(true)}
+                aria-label="Open image preview in modal"
+              >
+                <img
+                  src={displayImageUrl}
+                  alt={uploadedPhoto.fileName}
+                />
+              </button>
+              <p className="contact-form__hint api-image-preview__hint">
+                Click preview to open full size
+              </p>
             </div>
 
             <p className="api-upload-meta">
@@ -208,7 +258,7 @@ function ApiDemoPage() {
             {users.length > 0 && (
               <div className="contact-form__field api-assign-user">
                 <label htmlFor="api-assign-user" className="contact-form__label">
-                  Attach photo to user
+                  Show photo on user
                 </label>
                 <select
                   id="api-assign-user"
@@ -224,21 +274,29 @@ function ApiDemoPage() {
                   ))}
                 </select>
                 <p className="contact-form__hint api-assign-hint">
-                  The selected user&apos;s card will show this photo instead of
-                  initials.
+                  The selected user&apos;s card will display this uploaded photo.
                 </p>
               </div>
             )}
 
-            {uploadedPhoto.apiUrl && (
-              <a
-                className="api-upload-success__link"
-                href={uploadedPhoto.apiUrl}
-                target="_blank"
-                rel="noreferrer"
-              >
-                View on API: {uploadedPhoto.apiUrl}
-              </a>
+            {assignedUser && (
+              <div className="api-user-detail-preview">
+                <p className="api-image-preview__label">Photo with user details (from state)</p>
+                <div className="api-user-detail-preview__card">
+                  <img
+                    className="api-user-detail-preview__photo"
+                    src={displayImageUrl}
+                    alt={assignedUser.name}
+                  />
+                  <div className="api-user-detail-preview__info">
+                    <h3 className="api-user-detail-preview__name">{assignedUser.name}</h3>
+                    <p className="api-user-detail-preview__meta">{assignedUser.email}</p>
+                    <p className="api-user-detail-preview__meta">{assignedUser.phone}</p>
+                    <p className="api-user-detail-preview__meta">{assignedUser.address.city}</p>
+                    <p className="api-user-detail-preview__meta">{assignedUser.company.name}</p>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
         )}
@@ -249,8 +307,8 @@ function ApiDemoPage() {
           <span className="contact-form__badge">API data</span>
           <h2 className="contact-form__title">Users from public API</h2>
           <p className="contact-form__hint">
-            Data loaded from JSONPlaceholder. Uploaded photo appears on the
-            assigned user card.
+            Data loaded from JSONPlaceholder. Assigned photo appears on the
+            selected user card.
           </p>
         </header>
 
@@ -270,7 +328,7 @@ function ApiDemoPage() {
 
         <p className="api-users-count">
           <span className="contact-list-section__count">{filteredUsers.length}</span>
-          users found
+          {" "}users found
         </p>
 
         {error && (
@@ -288,7 +346,7 @@ function ApiDemoPage() {
         {!loading && !error && filteredUsers.length > 0 && (
           <div className="contact-list api-user-list">
             {filteredUsers.map((user) => {
-              const userPhoto = getPhotoForUser(user.id);
+              const userPhoto = getPhotoUrlForUser(user.id);
 
               return (
                 <article
@@ -309,7 +367,14 @@ function ApiDemoPage() {
                   <div className="contact-card__body">
                     <h3 className="contact-card__name">{user.name}</h3>
                     {userPhoto && (
-                      <p className="api-user-photo-badge">Uploaded photo attached</p>
+                      <div className="api-user-photo-row">
+                        <img
+                          className="api-user-photo-row__thumb"
+                          src={userPhoto}
+                          alt={`Photo for ${user.name}`}
+                        />
+                        <span className="api-user-photo-badge">Uploaded photo</span>
+                      </div>
                     )}
                     <p className="contact-card__meta">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -361,6 +426,42 @@ function ApiDemoPage() {
           </div>
         )}
       </section>
+
+      {uploadedPhoto && displayImageUrl && isPreviewModalOpen && (
+        <dialog
+          className="image-preview-modal"
+          open
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setIsPreviewModalOpen(false);
+            }
+          }}
+          onCancel={(e) => {
+            e.preventDefault();
+            setIsPreviewModalOpen(false);
+          }}
+        >
+          <div className="image-preview-modal__content">
+            <div className="image-preview-modal__toolbar">
+              <p className="image-preview-modal__title">{uploadedPhoto.fileName}</p>
+              <button
+                type="button"
+                className="image-preview-modal__close"
+                onClick={() => setIsPreviewModalOpen(false)}
+                aria-label="Close preview modal"
+              >
+                ×
+              </button>
+            </div>
+            <div className="image-preview-modal__image-wrap">
+              <img
+                src={displayImageUrl}
+                alt={`Large preview of ${uploadedPhoto.fileName}`}
+              />
+            </div>
+          </div>
+        </dialog>
+      )}
     </div>
   );
 }
