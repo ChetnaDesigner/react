@@ -268,7 +268,7 @@ function ApiDemoPage() {
 
             {assignedUser && (
               <div className="api-user-detail-preview">
-                <p className="api-image-preview__label">Photo with user details (from state)</p>
+               
                 <div className="api-user-detail-preview__card">
                   <img
                     className="api-user-detail-preview__photo"
@@ -340,9 +340,7 @@ function ApiDemoPage() {
                   className={`contact-card${userPhoto ? " contact-card--has-photo" : ""}`}
                   key={user.id}
                 >
-                  <header className="contact-card__header">
-                   
-                  </header>
+                
                   <div className="contact-card__body">
                     {userPhoto && (
                       <div className="api-user-card-photo">
